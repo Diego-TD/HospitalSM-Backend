@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: ../..
+      dockerfile: ./Docker/production/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    env_file:
+      - .env.prod
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=proddb
+      - POSTGRES_USER=produser
+      - POSTGRES_PASSWORD=prodpassword
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+
+volumes:
+  postgres_data_prod:

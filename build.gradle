@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'sm'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Core Spring Boot dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-web'       // REST API with Spring MVC
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'   // JPA for data persistence with PostgreSQL
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'   // Actuator for monitoring
+
+    // Lombok for reduced boilerplate code
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Database driver
+    runtimeOnly 'org.postgresql:postgresql'   // PostgreSQL driver
+
+    // Security
+    implementation 'org.mindrot:jbcrypt:0.4'  // BCrypt for password encryption
+
+    // Development tools (exclude from production build)
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'  // Hot reloading in development
+
+    // Testing dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'  // Testing support with JUnit
+
+    // Flyway for database migrations
+    implementation 'org.flywaydb:flyway-core'
+
+    // Testcontainers for integration testing
+    testImplementation 'org.testcontainers:junit-jupiter:1.17.6'
+    testImplementation 'org.testcontainers:postgresql:1.17.6'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+springBoot {
+    mainClass = 'sm.hospitalsm.HospitalSmApplication'
+}
+
