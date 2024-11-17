@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.5'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport // Generate report after tests run
+}
+
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Core Spring Boot dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-web'       // REST API with Spring MVC
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'   // JPA for data persistence with PostgreSQL
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'   // Actuator for monitoring
+
+    // Lombok for reduced boilerplate code
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Database driver
+    runtimeOnly 'org.postgresql:postgresql'   // PostgreSQL driver
+
+    // Security
+    implementation 'org.mindrot:jbcrypt:0.4'  // BCrypt for password encryption
+
+    // Development tools (exclude from production build)
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'  // Hot reloading in development
+
+    // Testing dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'  // Testing support with JUnit
+    testImplementation 'com.h2database:h2' // H2 for integration tests
+
+}
+
+
+bootJar {
+    archiveFileName = 'app.jar'
+}
+
+springBoot {
+    mainClass.set("sm.hospitalsm.HospitalSmApplication")
+}
+

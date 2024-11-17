@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:15
+    env_file:
+      - .env  # Adjusted path to the .env file
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: ../..
+      dockerfile: ./Docker/development/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../..:/app
+      - ~/.gradle:/home/gradle/.gradle
+    env_file:
+      - .env  # Adjusted path to the .env file
+    depends_on:
+      - db
+
+volumes:
+  postgres_data_dev:
