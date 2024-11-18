@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
-    Optional<AppUser> findByUsername(String username);
+    Optional<AppUser> findByUsername(String username); // do i need to add the query or this works by default?
 }

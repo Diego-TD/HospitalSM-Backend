@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppUser {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Specifies auto-increment strategy
     private Long id;
@@ -22,7 +21,8 @@ public class AppUser {
     @Column(nullable = false)
     private String password;
 
-    AppUser(String username, String password) {
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
-    }
 }
