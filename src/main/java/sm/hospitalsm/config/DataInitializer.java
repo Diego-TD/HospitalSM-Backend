@@ -2,6 +2,7 @@ package sm.hospitalsm.config;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.CommandLineRunner;
 import sm.hospitalsm.entity.AppUser;
@@ -12,6 +13,32 @@ import sm.hospitalsm.repository.RoleRepository;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
+    @Value("${admin.username}")
+    private String adminUsername;
+
+    @Value("${admin.password}")
+    private String adminPassword;
+
+    @Value("${doctor.username}")
+    private String doctorUsername;
+
+    @Value("${doctor.password}")
+    private String doctorPassword;
+
+    @Value("${receptionist.username}")
+    private String receptionistUsername;
+
+    @Value("${receptionist.password}")
+    private String receptionistPassword;
+
+    @Value("${receptionist2.username}")
+    private String receptionist2Username;
+
+    @Value("${receptionist2.password}")
+    private String receptionist2Password;
+
+    private final String [] roles = {"admin", "doctor", "GeneralReceptionist", "PersonalReceptionist"};
+
     @Autowired
     private RoleRepository roleRepository;
 
@@ -19,9 +46,32 @@ public class DataInitializer implements CommandLineRunner {
     private AppUserRepository appUserRepository;
 
     @Override
-    public void run(String... args) throws Exception {
-        // Initialize Roles
-        String[] roles = {"admin", "doctor", "type1", "type2"};
+    public void run(String... args) {
+        verifyCriticalVariables();
+        initializeRoles();
+        initializeUsers();
+    }
+
+    private void verifyCriticalVariables() {
+        if (isNullOrEmpty(adminUsername) || isNullOrEmpty(adminPassword)) {
+            throw new IllegalStateException("Critical environment variables for admin user are missing.");
+        }
+        if (isNullOrEmpty(doctorUsername) || isNullOrEmpty(doctorPassword)) {
+            throw new IllegalStateException("Critical environment variables for doctor user are missing.");
+        }
+        if (isNullOrEmpty(receptionistUsername) || isNullOrEmpty(receptionistPassword)) {
+            throw new IllegalStateException("Critical environment variables for receptionist user are missing.");
+        }
+        if (isNullOrEmpty(receptionist2Username) || isNullOrEmpty(receptionist2Password)) {
+            throw new IllegalStateException("Critical environment variables for receptionist2 user are missing.");
+        }
+    }
+
+    private boolean isNullOrEmpty(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private void initializeRoles() {
         for (String roleName : roles) {
             if (roleRepository.findByName(roleName).isEmpty()) {
                 Role role = new Role();
@@ -29,43 +79,13 @@ public class DataInitializer implements CommandLineRunner {
                 roleRepository.save(role);
             }
         }
+    }
 
-        // Fetch admin credentials from environment variables or use defaults
-        String adminUsername = System.getenv("ADMIN_USERNAME");
-        String adminPassword = System.getenv("ADMIN_PASSWORD");
-        String adminRole = "admin";
-
-        // Use default credentials if environment variables are not set
-        if (adminUsername == null) adminUsername = "admin";
-        if (adminPassword == null) adminPassword = "password";
-
-        // Initialize Admin User
-        if (appUserRepository.findByUsername(adminUsername).isEmpty()) {
-            Role role = roleRepository.findByName(adminRole).orElseThrow(
-                    () -> new RuntimeException("Admin role not found")
-            );
-
-            AppUser admin = new AppUser();
-            admin.setUsername(adminUsername);
-            admin.setPassword(BCrypt.hashpw(adminPassword, BCrypt.gensalt())); // Hash the password
-            admin.setRole(role);
-            appUserRepository.save(admin);
-        }
-
-        // Add Dummy Users
-        String doctorUsername = System.getenv("DOCTOR_USERNAME");
-        String doctorPassword = System.getenv("DOCTOR_PASSWORD");
-
-        String receptionistUsername = System.getenv("RECEPTIONIST_USERNAME");
-        String receptionistPassword = System.getenv("RECEPTIONIST_PASSWORD");
-
-        String receptionist2Username = System.getenv("RECEPTIONIST2_USERNAME");
-        String receptionist2Password = System.getenv("RECEPTIONIST2_PASSWORD");
-
-
-        createDummyUser(doctorUsername, doctorPassword, "doctor");
-        createDummyUser(receptionistUsername, receptionistPassword, "type1");
-        createDummyUser(receptionist2Username, receptionist2Password, "type2");
+    private void initializeUsers() {
+        createDummyUser(adminUsername, adminPassword, roles[0]);
+        createDummyUser(doctorUsername, doctorPassword, roles[1]);
+        createDummyUser(receptionistUsername, receptionistPassword, roles[2]);
+        createDummyUser(receptionist2Username, receptionist2Password, roles[3]);
     }
 
     private void createDummyUser(String username, String password, String roleName) {
@@ -73,7 +93,6 @@ public class DataInitializer implements CommandLineRunner {
             Role role = roleRepository.findByName(roleName).orElseThrow(
                     () -> new RuntimeException(roleName + " role not found")
             );
-
             AppUser user = new AppUser();
             user.setUsername(username);
             user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt())); // Hash the password

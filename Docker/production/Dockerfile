@@ -17,9 +17,6 @@ COPY src src
 # Build the application
 RUN ./gradlew clean bootJar -x test --no-daemon --info
 
-# List the contents of the build/libs directory
-RUN ls -l build/libs
-
 # Run stage
 FROM openjdk:17-jdk-slim
 
@@ -32,4 +29,4 @@ COPY --from=build /app/build/libs/app.jar app.jar
 EXPOSE 8080
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
