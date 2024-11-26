@@ -4,10 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sm.hospitalsm.dto.LoginRequest;
 import sm.hospitalsm.entity.AppUser;
 import sm.hospitalsm.repository.AppUserRepository;
@@ -15,6 +12,7 @@ import sm.hospitalsm.repository.AppUserRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+@CrossOrigin(origins = "http://localhost:4321")
 
 @RestController
 @RequestMapping("/api")
@@ -29,7 +27,7 @@ public class AuthController {
         if (user.isPresent() && passwordMatches(loginRequest.getPassword(), user.get().getPassword())) {
             Map<String, Object> response = new HashMap<>();
             response.put("userId", user.get().getId());
-            response.put("role", user.get().getRole());
+            response.put("role", user.get().getRole().getName());
             return ResponseEntity.ok(response);
         }
 
