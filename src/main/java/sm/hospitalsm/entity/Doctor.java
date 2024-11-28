@@ -8,14 +8,18 @@ import lombok.Data;
 public class Doctor {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Specifies auto-increment strategy
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(nullable = false, unique = true)
     private AppUser user;
 
     private String name;
+
     private String lastNames;
+
     private int age;
+
+    private boolean available;
 }

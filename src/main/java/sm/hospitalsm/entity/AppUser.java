@@ -6,13 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "app_user")
+@Table
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Specifies auto-increment strategy
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -22,7 +22,7 @@ public class AppUser {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Role role;
 
 }
