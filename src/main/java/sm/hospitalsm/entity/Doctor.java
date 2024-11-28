@@ -21,5 +21,9 @@ public class Doctor {
 
     private int age;
 
+    @OneToOne
+    @JoinColumn(nullable = false)
+    private Reason reason;
+
     private boolean available;
 }

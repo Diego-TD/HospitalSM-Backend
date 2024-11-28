@@ -3,9 +3,9 @@ package sm.hospitalsm.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
 @Entity
-public class ConsultationRoom {
+@Data
+public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

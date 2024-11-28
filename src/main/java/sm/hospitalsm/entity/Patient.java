@@ -3,6 +3,8 @@ package sm.hospitalsm.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 public class Patient {
@@ -11,9 +13,8 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Appointment appointment;
+    @Column(nullable = false, unique = true)
+    private String gobId;
 
     @Column(nullable = false)
     private String name;
@@ -21,8 +22,9 @@ public class Patient {
     @Column(nullable = false)
     private String lastNames;
 
-    @Column(nullable = false)
-    private String state;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private State state;
 
     @Column(nullable = false)
     private int age;
