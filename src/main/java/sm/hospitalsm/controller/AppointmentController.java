@@ -24,8 +24,8 @@ public class AppointmentController {
         return ResponseEntity.ok().body(appointmentRepository.findAll());
     }
 
-    @DeleteMapping("/appointments")
-    public ResponseEntity<String> deleteAppointment(@RequestParam("id") Long id) {
+    @DeleteMapping("/appointment/{id}")
+    public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
         try {
             String message = appointmentService.deleteAppointment(id);
             return ResponseEntity.ok(message);
