@@ -32,7 +32,7 @@ public class Appointment {
     @OneToOne
     private ConsultationRoom room;
 
-    private String diagnosis;
+    private String diagnosis = "";
 
     @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
