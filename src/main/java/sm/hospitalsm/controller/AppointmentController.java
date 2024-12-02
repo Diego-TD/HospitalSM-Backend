@@ -25,6 +25,11 @@ public class AppointmentController {
         return ResponseEntity.ok().body(appointmentRepository.findAll());
     }
 
+    @GetMapping("/appointment/{doctorId}")
+    public ResponseEntity<Iterable<Appointment>> getAppointmentByDoctor(@PathVariable Long doctorId) {
+        return ResponseEntity.ok().body(appointmentRepository.findByDoctorId(doctorId));
+    }
+
     @DeleteMapping("/appointment/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
         try {
