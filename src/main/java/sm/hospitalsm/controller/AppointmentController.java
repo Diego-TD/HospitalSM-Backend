@@ -25,9 +25,14 @@ public class AppointmentController {
         return ResponseEntity.ok().body(appointmentRepository.findAll());
     }
 
-    @GetMapping("/appointment/{doctorId}")
-    public ResponseEntity<Iterable<Appointment>> getAppointmentByDoctor(@PathVariable Long doctorId) {
-        return ResponseEntity.ok().body(appointmentRepository.findByDoctorId(doctorId));
+    @GetMapping("/appointments/doctor/{id}")
+    public ResponseEntity<Iterable<Appointment>> getAppointmentByDoctor(@PathVariable Long id) {
+        return ResponseEntity.ok().body(appointmentRepository.findByDoctorId(id));
+    }
+
+    @GetMapping("/appointments/patient/{id}")
+    public ResponseEntity<Iterable<Appointment>> getAppointmentByPatient(@PathVariable Long id) {
+        return ResponseEntity.ok().body(appointmentRepository.findByPatientId(id));
     }
 
     @DeleteMapping("/appointment/{id}")
