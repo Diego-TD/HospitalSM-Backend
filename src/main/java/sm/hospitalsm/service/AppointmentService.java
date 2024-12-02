@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sm.hospitalsm.dto.CreateAppointmentRequest;
 import sm.hospitalsm.dto.UpdateAppointmentDateRequest;
+import sm.hospitalsm.dto.UpdateAppointmentDiagnosisRequest;
 import sm.hospitalsm.entity.*;
 import sm.hospitalsm.entity.Record;
 import sm.hospitalsm.repository.*;
@@ -13,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class AppointmentService {
@@ -32,6 +35,7 @@ public class AppointmentService {
     private RecordRepository recordRepository;
     @Autowired
     private RandomSelectionUtil randomSelectionUtil;
+    private static final Logger logger = LoggerFactory.getLogger(AppointmentService.class);
 
     private Patient getNewPatient(CreateAppointmentRequest createAppointmentRequest) {
         Patient newPatient = new Patient();
@@ -68,6 +72,23 @@ public class AppointmentService {
         }
 
         appointmentRepository.save(appointment);
+        return "Appointment updated successfully.";
+    }
+
+    public String updateAppointmentDiagnosis(Long id, UpdateAppointmentDiagnosisRequest updateAppointmentDiagnosisRequest) {
+        logger.info("Received request to update diagnosis for Appointment ID: {}", id);
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Appointment not found with ID: " + id));
+
+        if (updateAppointmentDiagnosisRequest.getDiagnosis() != null && !updateAppointmentDiagnosisRequest.getDiagnosis().isEmpty()) {
+            appointment.setDiagnosis(updateAppointmentDiagnosisRequest.getDiagnosis());
+            logger.info("Set diagnosis to: {}", updateAppointmentDiagnosisRequest.getDiagnosis());
+        } else {
+            logger.warn("Received empty diagnosis for Appointment ID: {}", id);
+        }
+
+        appointmentRepository.save(appointment);
+        logger.info("Appointment ID {} updated successfully.", id);
         return "Appointment updated successfully.";
     }
 

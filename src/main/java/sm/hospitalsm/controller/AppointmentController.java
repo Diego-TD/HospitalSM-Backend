@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sm.hospitalsm.dto.CreateAppointmentRequest;
 import sm.hospitalsm.dto.UpdateAppointmentDateRequest;
+import sm.hospitalsm.dto.UpdateAppointmentDiagnosisRequest;
 import sm.hospitalsm.entity.Appointment;
 import sm.hospitalsm.repository.AppointmentRepository;
 import sm.hospitalsm.service.AppointmentService;
@@ -45,7 +46,7 @@ public class AppointmentController {
         }
     }
 
-    @PatchMapping("/appointment/{id}/date")
+    @PatchMapping("/appointments/{id}/date")
     public ResponseEntity<?> updateAppointmentDate(@PathVariable Long id, @RequestBody UpdateAppointmentDateRequest updateDateRequest) {
         try {
             String message = appointmentService.updateAppointmentDate(id, updateDateRequest);
@@ -53,6 +54,15 @@ public class AppointmentController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
+    }
+
+
+    @PatchMapping("/appointments/{id}/diagnosis")
+    public ResponseEntity<String> updateAppointmentDiagnosis(
+            @PathVariable Long id,
+            @RequestBody UpdateAppointmentDiagnosisRequest updateAppointmentDiagnosisRequest) {
+        String response = appointmentService.updateAppointmentDiagnosis(id, updateAppointmentDiagnosisRequest);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/appointments")
