@@ -28,11 +28,12 @@ public class AppointmentService {
     private ConsultationRoomRepository consultationRoomRepository;
     @Autowired
     private StateRepository stateRepository;
-
+    @Autowired
+    private RecordRepository recordRepository;
     @Autowired
     private RandomSelectionUtil randomSelectionUtil;
 
-    private static Patient getNewPatient(CreateAppointmentRequest createAppointmentRequest) {
+    private Patient getNewPatient(CreateAppointmentRequest createAppointmentRequest) {
         Patient newPatient = new Patient();
         newPatient.setGobId(createAppointmentRequest.getPatientGobId());
         newPatient.setName(createAppointmentRequest.getPatientName());
@@ -43,6 +44,7 @@ public class AppointmentService {
         Record record = new Record();
         record.setFamilyRecord("");
         record.setCurrentTreatments("");
+        recordRepository.save(record);
 
         newPatient.setRecord(record);
         return newPatient;
@@ -70,10 +72,6 @@ public class AppointmentService {
     }
 
     public boolean validData(Appointment appointment) {
-
-        if (appointment.getId() == null) {
-            throw new IllegalArgumentException("Appointment id is null.");
-        }
 
         if(appointment.getDoctor() == null) {
             throw new IllegalArgumentException("Appointment doctor is null.");
@@ -133,6 +131,7 @@ public class AppointmentService {
             Patient newPatient = getNewPatient(createAppointmentRequest);
             Optional<State> patientState = stateRepository.findById(createAppointmentRequest.getPatientStateId());
             patientState.ifPresent(newPatient::setState);
+            patientRepository.save(newPatient);
             appointment.setPatient(newPatient);
             return;
         }

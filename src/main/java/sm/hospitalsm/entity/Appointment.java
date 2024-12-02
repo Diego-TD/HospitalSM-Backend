@@ -29,7 +29,7 @@ public class Appointment {
     @JoinColumn(nullable = false)
     private Reason reason;
 
-    @OneToOne
+    @ManyToOne
     private ConsultationRoom room;
 
     private String diagnosis = "";
